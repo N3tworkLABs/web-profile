@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>N3tworkLABs — Seguridad de Redes & Automatización</title>
+  <meta name="description" content="N3tworkLABs — Seguridad de Redes, Automatización NetOps & SecOps, Python, Fortinet, Cisco." />
+  <meta property="og:title" content="N3tworkLABs" />
+  <meta property="og:description" content="N3tworkLABs: Seguridad de Redes y Automatización con Python/Ansible (Fortinet & Cisco)." />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#C81D25" />
+  <link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect rx="12" width="64" height="64" fill="%23C81D25"/><text x="14" y="44" font-family="Arial,Inter,sans-serif" font-size="32" font-weight="700" fill="white">N3</text></svg>'>
+  <style>
+    :root{ color-scheme: light dark; 
+      /* Tokens base (modo claro) */
+      --bg:#ffffff; 
+      --bg-1:#ffffff;           /* gradiente superior (claro) */
+      --bg-2:#f3f4f6;           /* gradiente inferior (claro) */
+      --card:#f8fafc; 
+      --ring:#e5e7eb; 
+      --text:#0f172a; 
+      --muted:#6b7280; 
+      --accent:#C81D25; 
+      /* Hero (modo claro) */
+      --hero-overlay: rgba(255,255,255,0.12);
+      --hero-title:#000000;
+      --hero-paragraph:#000000;
+      /* Imagen del hero (modo claro/oscuro usa la misma ruta). Cambia solo esta variable para sustituir la imagen. */
+      --hero-image: url('image/about-hero.jpg');
+    }
+    [data-theme="dark"]{ 
+      /* Revertido al tono anterior (más oscuro que el cambio anterior) */
+      --bg:#0e1116;      /* base */
+      --bg-1:#111318;    /* gradiente top */
+      --bg-2:#0c0f14;    /* gradiente bottom */
+      --card:#0a0c0e;    /* tarjetas un poco más oscuras que el fondo */
+      --ring:#3a3f46;    /* borde sutil */
+      --text:#e8eef4;    /* texto */
+      --muted:#cbd5e1;   
+      /* Hero (modo oscuro) */
+      --hero-overlay: rgba(0,0,0,.45);
+      --hero-title:#e8eef4;
+      --hero-paragraph:#cbd5e1;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    html,body{margin:0;padding:0;
+      /* Fondo con gradiente sutil para diferenciar del contenido */
+      background: linear-gradient(to bottom, var(--bg-1), var(--bg-2));
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial
+    }
+    img{max-width:100%;height:auto;display:block}
+    a{color:var(--accent);text-decoration:none}
+    :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+    .wrap{max-width:1120px;margin:0 auto;padding:clamp(16px,3vw,24px)}
+    /* ===============================
+     Header fijo (sticky)
+     - Se queda arriba mientras haces scroll
+     - Fondo sólido para legibilidad
+     - Borde inferior sutil
+   =============================== */
+    /* ===============================
+     Header fijo (sticky)
+     - Se queda arriba mientras haces scroll
+     - Fondo sólido para legibilidad
+     - Borde inferior sutil
+   =============================== */
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;
+      position:sticky; top:0; z-index:1000;                /* clave: sticky arriba */
+      background: linear-gradient(to bottom, var(--bg-1), var(--bg-2)); /* coherente con el body */
+      -webkit-backdrop-filter:saturate(120%) blur(6px);     /* suaviza si hay transparencias */
+      backdrop-filter:saturate(120%) blur(6px);
+      border-bottom:1px solid var(--ring);                  /* línea inferior muy sutil */
+    }
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:20px}
+    .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent)}
+    nav a{margin-left:14px;font-weight:700;color:var(--text)}
+    nav a:hover{color:var(--accent)}
+    .active{color:var(--accent)}
+    /* ===============================
+     Controles de cabecera (idioma/tema)
+     - Fondo NEGRO y texto BLANCO (fijos, no dependen del tema)
+     - Borde sutil para separar del fondo
+     - Estados hover/active/focus accesibles
+   =============================== */
+    .tog{
+      display:inline-flex;align-items:center;gap:8px;
+      margin-left:14px;                 /* separa de los enlaces del nav */
+      padding:6px 12px;                 /* área clicable cómoda */
+      border:1px solid #333;            /* borde discreto */
+      border-radius:999px;              /* píldora */
+      background:#000;                  /* FONDO negro fijo */
+      color:#fff;                       /* TEXTO blanco fijo */
+      cursor:pointer;font-weight:700;
+      transition:background .2s ease, color .2s ease, border-color .2s ease, transform .06s;
+    }
+    .tog:hover{ background:#111; }
+    .tog:active{ transform:translateY(1px); }
+    .tog:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+    /* Hero principal */
+    /* Hero principal */
+    /* Hero principal como tarjeta, sin imagen de fondo */
+    .hero{position:relative;overflow:hidden;border:1px solid var(--ring);border-radius:22px;padding:56px;
+      background:var(--card);                /* ya no usa imagen de fondo */
+      scroll-margin-top:80px;                /* evita que el header tape el ancla #inicio */
+      min-height:360px;                      /* presencia visual */
+    }
+    .hero h1{font-size:clamp(28px,5vw,40px);line-height:1.1;margin:0 0 12px;color:var(--hero-title)}
+    .hero p{margin:0 0 22px;color:var(--hero-paragraph);font-size:18px}
+    .cta{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border-radius:999px;padding:12px 18px;font-weight:800;margin-top:10px}
+    .cta:hover{opacity:.92}
+
+    /* PCB a la derecha para no tapar texto */
+    
+    /* Layout interno del hero: texto + imagen a la derecha */
+    .hero-content{position:relative;z-index:1;max-width:100%}
+    /* Hero layout: texto a la izquierda + imagen a la derecha */
+    .hero .hero-inner{display:grid;grid-template-columns:1.1fr 0.9fr;gap:24px;align-items:center}
+    .hero-copy{min-width:260px}
+    .hero-figure{position:relative;width:100%;border:1px solid var(--ring);border-radius:14px;overflow:hidden;background:#000}
+    [data-theme="dark"] .hero-figure{background:#000}
+    .video-embed{position:relative;width:100%;padding-top:56.25%} /* 16:9 */
+    .video-embed iframe, .video-embed video{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+    .video-embed video{cursor:pointer} /* click para pausar/reanudar */
+    @media(max-width:920px){.hero .hero-inner{grid-template-columns:1fr}}
+    
+    .hero-copy{flex:1;min-width:260px}
+    
+    
+    
+    
+
+    /* Imagen del hero ahora está puesta como BACKGROUND en .hero (se eliminó el bloque .hero-media) */
+
+    /* Utilidad accesible: oculto visualmente pero disponible para lectores de pantalla */
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+
+    /* Secciones de contenido */
+    .section{margin-top:48px; scroll-margin-top:80px}  /* offset para anclas (Sobre nosotros, Proyectos, Contacto, etc.) */
+    .section h2{font-size:26px;margin:0 0 14px}
+    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:18px}
+    .card{grid-column:span 12;border:1px solid var(--ring);background:var(--card);border-radius:18px;padding:18px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,.05);transition:transform .2s ease, box-shadow .2s ease}
+    @media(min-width:920px){.card{grid-column:span 6}}
+    .card:hover{transform:translateY(-2px);box-shadow:0 6px 14px rgba(0,0,0,.08)}
+    .card h3{margin:0 0 8px;font-size:18px;line-height:1.3;overflow-wrap:anywhere;word-break:break-word;hyphens:auto}
+    .card p{margin:0;color:var(--muted)}
+
+    .kpis{display:grid;grid-template-columns:repeat(12,1fr);gap:14px;margin-top:18px}
+    .kpi{grid-column:span 6;background:var(--card);border:1px solid var(--ring);border-radius:16px;padding:14px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+    @media(min-width:680px){.kpi{grid-column:span 3}}
+    .kpi .big{font-size:24px;font-weight:900}
+    .kpi .label{color:var(--muted);font-size:13px}
+
+    .skills{display:flex;flex-wrap:wrap;gap:10px}
+    .chip{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--ring);border-radius:999px;padding:8px 12px;color:var(--text);background:var(--card)}
+
+    .badges{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    .badges img{width:112px;height:112px;border-radius:12px;border:1px solid var(--ring);box-shadow:0 1px 4px rgba(0,0,0,.06);background:#fff}
+/* Excepción: Fortinet NSE4 SIN borde */
+.badges img[alt="Fortinet NSE4"]{ border:none !important; }
+
+    /* Caja fija blanca para certificaciones (no cambia en dark mode) */
+    .certs-box{background:#ffffff;border:1px solid var(--ring);border-radius:18px;padding:16px;box-shadow:0 4px 10px rgba(0,0,0,.04);color:#000}
+
+
+    footer{margin:60px 0 12px;color:var(--muted);font-size:14px;text-align:center}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header role="banner">
+      <!--
+        HEADER (barra superior)
+        - role="banner": mejora accesibilidad, identifica la cabecera del sitio.
+        - Contiene la marca (logo/texto) y la navegación principal.
+      -->
+      <div class="brand">
+        <!-- Punto rojo de marca (acento visual) -->
+        <span class="dot"></span>
+        <!-- Nombre / marca del sitio -->
+        N3tworkLABs
+        <!-- Lema de la marca (ya no es perfil personal) -->
+        <span id="brandTag" style="opacity:.6;font-weight:700">— Seguridad de Redes & Automatización</span>
+      </div>
+
+
+
+      
+      <!--
+        Navegación principal
+        - aria-label="Principal": ayuda a lectores de pantalla a identificar este bloque.
+        - Los <a> enlazan a páginas o secciones.
+        - El idioma (EN/ES) y el tema (claro/oscuro) son botones que cambian el estado de la página vía JS.
+      -->
+      <nav aria-label="Principal">
+        <!-- Enlace a la portada (index.html) -->
+
+        <!-- Página actual: "Sobre mí"
+             - class="active": se resalta en rojo (var(--accent)) según el CSS.
+             - aria-current="page": indica accesiblemente que este enlace corresponde a la página activa. -->
+        <a id="navAbout" href="#inicio">Sobre nosotros</a>
+
+        <!-- Enlaces a secciones dentro de index.html -->
+        <a id="navContact" href="#contact">Contacto</a>
+
+        <!-- Botón de idioma (EN/ES)
+             - Muestra "EN" cuando el idioma actual es español (pulsa para cambiar a inglés), y "ES" cuando estás en inglés.
+             - aria-label describe la acción para accesibilidad.
+             - El script usa este botón (id="langBtn") para alternar textos con el diccionario i18n. -->
+        <button class="tog" id="langBtn" type="button" aria-label="Cambiar idioma" title="Language">EN</button>
+
+        <!-- Botón de tema (claro/oscuro)
+             - ☀️ indica que estás en modo oscuro y al pulsar pasarías a claro.
+             - aria-pressed="true" comunica que el modo oscuro está "activo".
+             - El script alterna data-theme="dark" en <html> para cambiar variables CSS. -->
+        <button class="tog" id="themeBtn" type="button" aria-label="Cambiar tema" aria-pressed="true" title="Modo claro/oscuro">☀️</button>
+      </nav>
+
+
+      
+
+      
+    </header>
+
+    <main>
+      <section class="hero" id="inicio">
+        <div class="hero-content">
+          <div class="hero-inner">
+            <div class="hero-copy">
+              <h1 id="heroTitle">Sobre nosotros</h1>
+              <p id="heroDesc">Somos <strong>N3tworkLABs</strong>: diseñamos, aseguramos y automatizamos infraestructuras de red. Expertos en Fortinet y Cisco, llevamos NetOps &amp; SecOps a producción con Python/Ansible.</p>
+              <!-- CTA: queda una línea debajo del párrafo -->
+              <a class="cta" href="https://www.youtube.com/@n3tworklabs" target="_blank" rel="noopener" aria-label="Ver nuestro trabajo en YouTube">
+                <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true"><path fill="#ffffff" d="M23.5 6.2s-.2-1.6-.9-2.2c-.8-.9-1.7-.9-2.1-1C17.5 2.6 12 2.6 12 2.6s-5.5 0-8.5.4c-.4 0-1.3.1-2.1 1C.7 4.6.5 6.2.5 6.2S0 8.1 0 10v1.9c0 1.9.5 3.8.5 3.8s.2 1.6.9 2.2c.8.9 1.9.9 2.4 1 1.8.2 7.6.4 7.6.4s5.5 0 8.5-.4c.4 0 1.3-.1 2.1-1 .7-.6.9-2.2.9-2.2s.5-1.9.5-3.8V10c0-1.9-.5-3.8-.5-3.8ZM9.6 13.9V8.1l6 2.9-6 2.9Z"/></svg>
+                <span id="ctaText">Mira nuestro trabajo en YouTube — @n3tworklabs</span>
+              </a>
+            </div>
+            <figure class="hero-figure" aria-label="Video de presentación">
+              <div class="video-embed">
+                <video id="introVideo" class="click-toggle" controls preload="auto" playsinline webkit-playsinline autoplay muted loop poster="image/about-hero-smokewhite-1920x960.jpg">
+                  <!-- Intenta primero sin espacios en el nombre; si no existe, usa la segunda fuente con espacio -->
+                  <source src="video/N3twork-Labs-Intro.mp4" type="video/mp4">
+                  <source src="video/N3twork%20Labs%20Intro.mp4" type="video/mp4">
+                  Tu navegador no soporta el elemento <code>video</code>.
+                </video>
+              </div>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="bio">
+        <h2 id="bioTitle">Quiénes somos</h2>
+        <p id="bioText">Somos <strong>N3tworkLABs</strong>, un equipo enfocado en <strong>seguridad de redes</strong> y <strong>automatización</strong>. Construimos laboratorios reproducibles, herramientas y guías que convierten tareas complejas en procesos simples y auditables.</p>
+        <div class="kpis" aria-label="Indicadores clave">
+          <div class="kpi"><div class="big">8+ años</div><div class="label">Experiencia IT</div></div>
+          <div class="kpi"><div class="big">Sec / Net</div><div class="label">Fortinet & Cisco</div></div>
+          <div class="kpi"><div class="big">Python</div><div class="label">APIs & automatización</div></div>
+          <div class="kpi"><div class="big">YouTube</div><div class="label">Labs y guías</div></div>
+        </div>
+      </section>
+
+      <section class="section" id="projects">
+        <h2 id="whatTitle">Proyectos</h2>
+        <div class="grid">
+          <article class="card">
+            <h3 id="p1Title">Automatización NetOps & SecOps</h3>
+            <p id="p1Text">Python/Ansible, consumo de APIs, generación de reportes HTML/PDF, validaciones de configuración y respaldos.</p>
+          </article>
+          <article class="card">
+            <h3 id="p2Title">Seguridad de redes</h3>
+            <p id="p2Text">Fortinet (FGT/EMS/FAZ), Cisco (ASA/IOS-XE), ZTNA, SSL VPN/IPsec, hardening, segmentación y políticas granulares.</p>
+          </article>
+          <article class="card">
+            <h3 id="p3Title">Observabilidad</h3>
+            <p id="p3Text">Logs, NetFlow/sFlow, SNMP y alertas. Dashboards y troubleshooting reproducible.</p>
+          </article>
+          <article class="card">
+            <h3 id="p4Title">Contenido técnico</h3>
+            <p id="p4Text">Laboratorios y tutoriales en YouTube; documentación paso a paso para equipos de red y seguridad.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="skills">
+        <h2 id="skillsTitle">Habilidades clave</h2>
+        <div class="skills">
+          <span class="chip">Fortinet (FGT, EMS, FAZ)</span>
+          <span class="chip">Cisco (IOS-XE, ASA)</span>
+          <span class="chip">ZTNA / VPN</span>
+          <span class="chip">Python (requests, asyncio)</span>
+          <span class="chip">Ansible</span>
+          <span class="chip">APIs REST</span>
+          <span class="chip">Linux</span>
+          <span class="chip">Docker</span>
+          <span class="chip">Kubernetes (básico)</span>
+          <span class="chip">GitHub Actions</span>
+        </div>
+      </section>
+
+      <section class="section" id="xp">
+        <h2 id="xpTitle">Experiencia destacada</h2>
+        <div class="grid">
+          <article class="card">
+            <h3 id="xp1Title">Network Security Engineer</h3>
+            <p id="xp1Text">Diseño y operación de firewalls, VPNs y segmentación. Políticas de acceso basadas en identidad y postura.</p>
+          </article>
+          <article class="card">
+            <h3 id="xp2Title">Automatización de auditorías</h3>
+            <p id="xp2Text">Herramientas en Python para extraer y validar configuraciones (FortiGate/Cisco) y generar informes.</p>
+          </article>
+          <article class="card">
+            <h3 id="xp3Title">Topología y descubrimiento</h3>
+            <p id="xp3Text">Scripts para descubrir dispositivos, mapear conexiones y exportar diagramas a draw.io.</p>
+          </article>
+          <article class="card">
+            <h3 id="xp4Title">Labs MITM & ZTNA</h3>
+            <p id="xp4Text">Escenarios reproducibles con Ettercap/Bettercap/mitmproxy, ZTNA y SSL VPN.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="certs">
+        <h2 id="certsTitle">Certificaciones</h2>
+        <div class="certs-box">
+          <div class="badges">
+            <a title="Cisco CCNA">
+                <img src="image/ccna.png" alt="Cisco CCNA" width="112" height="112" loading="lazy" decoding="async" />
+            </a>
+            <a title="Cisco CyberOps">
+                <img src="image/cyberops.png" alt="Cyberops" width="112" height="112" loading="lazy" decoding="async" />
+            </a>
+            <a Cisco CyberOpstitle="Fortinet">
+                <img src="image/networksecurity.png" alt="Fortinet" width="112" height="112" loading="lazy" decoding="async" style="clip-path: inset(1px); border:0; box-shadow:none;" />
+            </a>
+        </div>
+        </div>
+      </section>
+
+      
+          
+      <!-- =============================
+           Contacto (al final)
+           - Se traduce vía i18n (contactTitle/contactText)
+         ============================= -->
+      <section class="section" id="contact">
+        <h2 id="contactTitle">Contacto</h2>
+        <p id="contactText">Escríbeme a <a href="mailto:contact@n3tworklabs.com">contact@n3tworklabs.com</a> o revisa mis laboratorios en <a href="https://www.youtube.com/@n3tworklabs" target="_blank" rel="noopener">@n3tworklabs</a>.</p>
+      </section>
+
+    </main>
+<footer role="contentinfo">© <span id="y"></span> N3twork Labs — <span id="footerMade">Hecho con ❤️ y Python</span></footer>
+  </div>
+
+  <script>
+    // =============================
+    //  Tema claro/oscuro (dark mode)
+    // =============================
+    // Referencias a: botón de tema, elemento raíz <html>, y preferencia guardada en el navegador
+    const btn = document.getElementById('themeBtn');
+    const root = document.documentElement; // <html>
+    const saved = localStorage.getItem('theme'); // 'dark' | 'light' guardado de visitas anteriores
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches; // preferencia del SO
+
+    // Aplica el tema: si es 'dark' añade data-theme="dark" al <html>, y ajusta el ícono/estado del botón
+    function applyTheme(mode){
+      if(mode==='dark'){
+        root.setAttribute('data-theme','dark'); // activa variables CSS del tema oscuro
+        btn.textContent='☀️';                  // muestra sol (siguiente click: pasar a claro)
+        btn.setAttribute('aria-pressed','true'); // accesibilidad: botón "activado"
+      } else {
+        root.removeAttribute('data-theme');     // vuelve a tema claro (valores por defecto)
+        btn.textContent='🌙';                  // muestra luna (siguiente click: pasar a oscuro)
+        btn.setAttribute('aria-pressed','false');
+      }
+    }
+
+    // Tema inicial: usa lo guardado; si no hay, empezamos en oscuro
+    applyTheme(saved || 'dark');
+
+    // Al hacer click en el botón, alterna entre claro y oscuro y guarda la preferencia
+    btn.addEventListener('click', ()=>{
+      const dark = root.getAttribute('data-theme')==='dark';
+      const next = dark ? 'light' : 'dark';
+      applyTheme(next);
+      localStorage.setItem('theme', next);
+    });
+
+    // =============================
+    //  i18n (traducciones ES/EN)
+    // =============================
+    const langBtn = document.getElementById('langBtn'); // botón EN/ES en la cabecera
+
+    // Diccionario de textos: claves -> ids en el HTML
+    const i18n = {
+      es: {
+        navInicio: 'Inicio', navAbout: 'Sobre nosotros', navProjects: 'Proyectos', navContact: 'Contacto',
+        brandTag: '— Seguridad de Redes & Automatización',
+        heroTitle: 'Sobre nosotros',
+        heroDesc: 'Somos N3tworkLABs: diseñamos, aseguramos y automatizamos infraestructuras de red. Expertos en Fortinet y Cisco, llevamos NetOps & SecOps a producción con Python/Ansible.',
+        ctaText: 'Mira nuestro trabajo en YouTube — @n3tworklabs',
+        bioTitle: 'Quiénes somos',
+        bioText: 'Somos <strong>N3tworkLABs</strong>, un equipo enfocado en <strong>seguridad de redes</strong> y <strong>automatización</strong>. Construimos laboratorios reproducibles, herramientas y guías que convierten tareas complejas en procesos simples y auditables.',
+        whatTitle: 'Proyectos',
+        // Proyectos (tarjetas)
+        p1Title: 'Automatización NetOps & SecOps',
+        p1Text:  'Python/Ansible, consumo de APIs, generación de reportes HTML/PDF, validaciones de configuración y respaldos.',
+        p2Title: 'Seguridad de redes',
+        p2Text:  'Fortinet (FGT/EMS/FAZ), Cisco (ASA/IOS-XE), ZTNA, SSL VPN/IPsec, hardening, segmentación y políticas granulares.',
+        p3Title: 'Observabilidad',
+        p3Text:  'Logs, NetFlow/sFlow, SNMP y alertas. Dashboards y troubleshooting reproducible.',
+        p4Title: 'Contenido técnico',
+        p4Text:  'Laboratorios y tutoriales en YouTube; documentación paso a paso para equipos de red y seguridad.',
+        skillsTitle: 'Habilidades clave',
+        xpTitle: 'Experiencia destacada',
+        // Experiencia (tarjetas)
+        xp1Title: 'Network Security Engineer',
+        xp1Text:  'Diseño y operación de firewalls, VPNs y segmentación. Políticas de acceso basadas en identidad y postura.',
+        xp2Title: 'Automatización de auditorías',
+        xp2Text:  'Herramientas en Python para extraer y validar configuraciones (FortiGate/Cisco) y generar informes.',
+        xp3Title: 'Topología y descubrimiento',
+        xp3Text:  'Scripts para descubrir dispositivos, mapear conexiones y exportar diagramas a draw.io.',
+        xp4Title: 'Labs MITM & ZTNA',
+        xp4Text:  'Escenarios reproducibles con Ettercap/Bettercap/mitmproxy, ZTNA y SSL VPN.',
+        certsTitle: 'Certificaciones',
+        contactTitle: 'Contacto',
+        contactText: 'Escríbeme a <a href="mailto:contact@n3tworklabs.com">contact@n3tworklabs.com</a> o revisa mis laboratorios en <a href="https://www.youtube.com/@n3tworklabs" target="_blank" rel="noopener">@n3tworklabs</a>.' ,
+        footerMade: 'Hecho con ❤️ y Python'
+      },
+      en: {
+        navInicio: 'Home', navAbout: 'About us', navProjects: 'Projects', navContact: 'Contact',
+        brandTag: '— Network Security & Automation',
+        heroTitle: 'About Us',
+        heroDesc: 'We are N3tworkLABs: we design, secure and automate network infrastructures. Fortinet/Cisco specialists, bringing NetOps & SecOps to production with Python/Ansible.',
+        ctaText: 'See our work on YouTube — @n3tworklabs',
+        bioTitle: 'Who we are',
+        bioText: 'We are <strong>N3tworkLABs</strong>, a team focused on <strong>network security</strong> and <strong>automation</strong>. We build reproducible labs, tools and guides that turn complex tasks into simple, auditable workflows.',
+        whatTitle: 'Projects',
+        // Projects (cards)
+        p1Title: 'NetOps & SecOps Automation',
+        p1Text:  'Python/Ansible, REST APIs, HTML/PDF reporting, configuration validations and backups.',
+        p2Title: 'Network Security',
+        p2Text:  'Fortinet (FGT/EMS/FAZ), Cisco (ASA/IOS-XE), ZTNA, SSL VPN/IPsec, hardening, segmentation and granular policies.',
+        p3Title: 'Observability',
+        p3Text:  'Logs, NetFlow/sFlow, SNMP and alerts. Dashboards and reproducible troubleshooting.',
+        p4Title: 'Technical Content',
+        p4Text:  'Hands-on labs and tutorials on YouTube; step‑by‑step docs for network and security teams.',
+        skillsTitle: 'Key skills',
+        xpTitle: 'Highlighted experience',
+        // Experience (cards)
+        xp1Title: 'Network Security Engineer',
+        xp1Text:  'Design and operation of firewalls, VPNs and segmentation. Access policies based on identity and posture.',
+        xp2Title: 'Audit Automation',
+        xp2Text:  'Python tools to extract and validate configurations (FortiGate/Cisco) and generate reports.',
+        xp3Title: 'Topology & Discovery',
+        xp3Text:  'Scripts to discover devices, map connections, and export diagrams to draw.io.',
+        xp4Title: 'MITM & ZTNA Labs',
+        xp4Text:  'Reproducible scenarios with Ettercap/Bettercap/mitmproxy, ZTNA and SSL VPN.',
+        certsTitle: 'Certifications',
+        contactTitle: 'Contact',
+        contactText: 'Email me at <a href="mailto:contact@n3tworklabs.com">contact@n3tworklabs.com</a> or check my labs on <a href="https://www.youtube.com/@n3tworklabs" target="_blank" rel="noopener">@n3tworklabs</a>.' ,
+        footerMade: 'Made with ❤️ and Python'
+      }
+    };
+
+    // Utilidad: cambia el texto/HTML de un elemento por id
+    // - isHTML=true permite inyectar HTML (por ejemplo <strong> ó enlaces)
+    function setText(id, value, isHTML=false){
+      const el = document.getElementById(id);
+      if(!el) return;              // si no existe el elemento, no hacemos nada
+      if(isHTML) el.innerHTML=value; // escribe HTML
+      else el.textContent=value;     // escribe texto plano
+    }
+
+    // Aplica un idioma:
+    // - pone <html lang="...">
+    // - actualiza el texto del botón (EN/ES) y su aria-label
+    // - usa el diccionario i18n para rellenar cada sección por id
+    // - guarda la preferencia en localStorage
+    function applyLang(lang){
+      document.documentElement.lang = lang;
+
+      if(langBtn){
+        // Si estamos en ES, el botón muestra EN (para cambiar). Si estamos en EN, muestra ES.
+        langBtn.textContent = (lang==='es'?'EN':'ES');
+        langBtn.setAttribute('aria-label', lang==='es'?'Cambiar a inglés':'Switch to Spanish');
+      }
+
+      const dict = i18n[lang] || i18n.es; // fallback: español
+
+      // Navegación y hero
+      setText('navInicio',   dict.navInicio);
+      setText('navAbout',    dict.navAbout);
+      setText('navProjects', dict.navProjects);
+      setText('navContact',  dict.navContact);
+      setText('heroTitle',   dict.heroTitle);
+      setText('heroDesc',    dict.heroDesc);
+      setText('ctaText',     dict.ctaText);
+      setText('brandTag',    dict.brandTag);
+
+      // Secciones
+      setText('bioTitle',    dict.bioTitle);
+      setText('bioText',     dict.bioText, true); // permite HTML en el texto
+      setText('whatTitle',   dict.whatTitle);
+      // Proyectos (tarjetas)
+      setText('p1Title',     dict.p1Title);
+      setText('p1Text',      dict.p1Text);
+      setText('p2Title',     dict.p2Title);
+      setText('p2Text',      dict.p2Text);
+      setText('p3Title',     dict.p3Title);
+      setText('p3Text',      dict.p3Text);
+      setText('p4Title',     dict.p4Title);
+      setText('p4Text',      dict.p4Text);
+      // Experiencia (tarjetas)
+      setText('xp1Title',    dict.xp1Title);
+      setText('xp1Text',     dict.xp1Text);
+      setText('xp2Title',    dict.xp2Title);
+      setText('xp2Text',     dict.xp2Text);
+      setText('xp3Title',    dict.xp3Title);
+      setText('xp3Text',     dict.xp3Text);
+      setText('xp4Title',    dict.xp4Title);
+      setText('xp4Text',     dict.xp4Text);
+      // Resto
+      setText('skillsTitle', dict.skillsTitle);
+      setText('xpTitle',     dict.xpTitle);
+      setText('certsTitle',  dict.certsTitle);
+      setText('contactTitle',dict.contactTitle);
+      setText('contactText', dict.contactText, true);
+
+      // Footer
+      setText('footerMade', dict.footerMade, true); // permite HTML (enlaces)
+
+      localStorage.setItem('lang', lang);
+    }
+
+    // Idioma inicial: lo guardado o español por defecto
+    const savedLang = localStorage.getItem('lang') || 'es';
+    applyLang(savedLang);
+
+    // Al pulsar el botón EN/ES, alterna idioma y guarda preferencia
+    if(langBtn){
+      langBtn.addEventListener('click', ()=>{
+        const curr = document.documentElement.lang || 'es';
+        const next = curr==='es' ? 'en' : 'es';
+        applyLang(next);
+      });
+    }
+
+    // Año dinámico en el pie de página
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Navegación: About → parte superior; Contact → parte inferior
+    (function(){
+      const linkAbout = document.getElementById('navAbout');
+      if(linkAbout){
+        linkAbout.addEventListener('click', (e)=>{
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      }
+      const linkContact = document.getElementById('navContact');
+      if(linkContact){
+        linkContact.addEventListener('click', (e)=>{
+          e.preventDefault();
+          window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+        });
+      }
+    })();
+
+    // =============================
+    // Video hero: autoplay + loop + click para pausar/reanudar (robusto)
+    // =============================
+    (function(){
+      const vid = document.getElementById('introVideo');
+      if(!vid) return;
+
+      // Requisitos para autoplay en la mayoría de navegadores (incluido iOS):
+      // muted + playsinline + autoplay
+      vid.muted = true;
+      vid.autoplay = true;
+      vid.loop = true;
+
+      function tryPlay(){
+        const p = vid.play();
+        if(p && typeof p.catch === 'function') p.catch(()=>{});
+      }
+
+      // Reproducir cuando haya datos suficientes
+      vid.addEventListener('canplay', tryPlay, { once:true });
+      vid.addEventListener('canplaythrough', tryPlay, { once:true });
+
+      // Asegurar reinicio al terminar
+      vid.addEventListener('ended', ()=>{ try{ vid.currentTime = 0; tryPlay(); }catch(e){} });
+
+      // Si el navegador bloquea autoplay hasta un gesto del usuario,
+      // reintenta al primer gesto que NO sea sobre el propio video (para no interferir con el toggle)
+      const resumeOnInteraction = (e)=>{
+        if(vid.contains(e.target)) return; // no fuerces play si el gesto es sobre el video (ahí manda el toggle)
+        if(vid.paused) tryPlay();
+        document.removeEventListener('pointerdown', resumeOnInteraction, true);
+      };
+      document.addEventListener('pointerdown', resumeOnInteraction, true);
+
+      // Click directo sobre el video: alterna pausa/reproducción
+      vid.addEventListener('click', ()=>{ vid.paused ? tryPlay() : vid.pause(); });
+
+      // Reintento inicial
+      tryPlay();
+    })();
+  </script>
+</body>
+</html>
